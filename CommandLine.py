@@ -81,9 +81,15 @@ Args:
             if settings["onerror"] == exit:
                 raise KeyError("Function not found.") # raise an error if the settings say that is allowed
             else:
-                return settings["onerror"]() # otherwise return the ouput on error func
-
-        return self.__commands[name](*args, **kwargs) # return the output of the command
+                return settings["onerror"]() # otherwise return the ouput of on error func
+        
+        try:
+            return self.__commands[name](*args, **kwargs) # return the output of the command
+        except TypeError:
+            if settings["onerror"] == exit:
+                raise TypeError("Too many arguments given.")
+            else:
+                return settings["onerror"]()
 
     def __call__(self):
         settings = self.config
