@@ -46,7 +46,12 @@ Args:
         command[optional]: The name of the command to get help on
         """
 
-        for _n, _f in self.__commands.items(): # self.__commands is a dict of commands names and functions
+        settings = self.config
+
+        if command in self.__commands.keys(): # self.__commands is a dict of commands names and functions
+            _n = command
+            _f = self.__commands[command]
+
             _f_docs = ""
 
             if _f.__doc__:
@@ -60,7 +65,28 @@ Args:
 
             _f_args = ", ".join(_f_args) # then format that list
 
-            print(f"\r{_n}({_f_args}):\n\n\r\t{_f_docs}\n") # print it all out nicely
+            return print(f"\r{_n}({_f_args}):\n\n\r\t{_f_docs}\n") # print it all out nicely and returns None
+        elif command != "":
+            if settings["onerror"] == exit:
+                raise KeyError("Function not found.") # raise an error if the settings say that is allowed
+            else:
+                return settings["onerror"]() # otherwise return the ouput of on error func
+
+        for _n, _f in self.__commands.items():
+            _f_docs = ""
+
+            if _f.__doc__:
+                _f_docs = "\n\t".join(_f.__doc__.strip().split("\n"))
+
+            _f_args = []
+
+            for _attr in _f.__code__.co_varnames:
+                if _attr[0] != "_" and _attr != "settings":
+                    _f_args += [_attr]
+
+            _f_args = ", ".join(_f_args)
+
+            print(f"\r{_n}({_f_args}):\n\n\r\t{_f_docs}\n")
 
     def hi(self, name=""):
         """
