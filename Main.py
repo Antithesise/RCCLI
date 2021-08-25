@@ -27,7 +27,7 @@ Args:
 def help(command=""):
     """
     Prints every command and how to use them.
-Args:
+    Args:
     command[optional]: The name of the command to get help on
     """
 
@@ -76,7 +76,7 @@ Args:
 def hi(name=""):
     """
     Prints "hi"
-Args:
+    Args:
     name[optional]: The name of the thing to say hello to
     """
 
