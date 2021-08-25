@@ -16,103 +16,39 @@ class CommandLine:
                 
                 if k == "onerror" and k not in defaults: # if atexit is set and onerror isn't
                     self.config[k] = self.config["atexit"] # set onerror to atexit
-    
-        return self.__call__()
 
-    def exit(self, status="0"):
-        """
-        If status is 0 (default), the commandline exits by calling
-ATEXIT. If status is an integer, the commandline will exit by
-calling system.exit() with that integer If status is a string, this
-will be printed and the exit status will be 1 (i.e., failure).
-Args:
-        status[optional]: The exit status
-        """
-        from sys import exit as __exit
+    def command(self):
+        def decorator_command(func):
+            from functools import wraps
 
-        settings = self.config
+            @wraps(func)
+            def wrapper_command(*args, **kwargs):
+                from os import environ
 
-        if status == "0":
-            return settings["atexit"]()
-        elif status.isdigit():
-            __exit(int(status))
-
-        return print(status) or status
-
-    def help(self, command=""):
-        """
-        Prints every command and how to use them.
-Args:
-        command[optional]: The name of the command to get help on
-        """
-
-        settings = self.config
-
-        if command in self.__commands.keys(): # self.__commands is a dict of commands names and functions
-            _n = command
-            _f = self.__commands[command]
-
-            _f_docs = ""
-            _f_args = []
-
-            if _f.__doc__:
-                _f_docs = "\n\t".join(_f.__doc__.strip().split("\n")) # reformat the function's doc strings
-
-            for _attr in _f.__code__.co_varnames: # for each local variable in the function
-                if _attr[0] != "_" and _attr != "settings": # if it is not named settings or starts with a '_'
-                    _f_args += [_attr] # add it to the list of variables
-
-            _f_args = ", ".join(_f_args) # then format that list
-
-            return print(f"\r{_n}({_f_args}):\n\n\r\t{_f_docs}\n") # print it all out nicely and returns None
-        
-        elif command != "":
-            if settings["onerror"] == exit:
-                raise KeyError("Command not found.") # raise an error if the settings say that is allowed
-            else:
-                return settings["onerror"]() # otherwise return the ouput of on error func
-
-        for _n, _f in self.__commands.items():
-            _f_docs = ""
-            _f_args = []
-
-            if _f.__doc__:
-                _f_docs = "\n\t".join(_f.__doc__.strip().split("\n"))
-
-            for _attr in _f.__code__.co_varnames:
-                if _attr[0] != "_" and _attr != "settings":
-                    _f_args += [_attr]
-
-            _f_args = ", ".join(_f_args)
-
-            print(f"\r{_n}({_f_args}):\n\n\r\t{_f_docs}\n")
-
-    def hi(self, name=""):
-        """
-        Prints "hi"
-Args:
-        name[optional]: The name of the thing to say hello to
-        """
-
-        return print(f"Hello {name}." if name else "Hi.") # print Hello name., or just Hi., then return None
+                if self.auth == environ["CODE"]:
+                    return func(*args, **kwargs)
+                else:
+                    raise PermissionError("You haven't been authorised yet")
+            return wrapper_command
+        return decorator_command
 
     @property
-    def __commands(self):
+    def commands(self):
         attrs = [attr for attr in self.__dir__() if not attr[0] == "_"]
 
         return {attr:self.__getattribute__(attr) for attr in attrs if callable(self.__getattribute__(attr))} # returns a dict of functions not starting with '_', and their names
 
-    def __execute(self, name: str, *args, **kwargs):
+    def execute(self, name: str, *args, **kwargs):
         settings = self.config
 
-        if name not in self.__commands: # if name is not a valid command
+        if name not in self.commands: # if name is not a valid command
             if settings["onerror"] == exit:
                 raise KeyError("Command not found.") # raise an error if the settings say that is allowed
             else:
                 return settings["onerror"]() # otherwise return the ouput of on error func
         
         try:
-            return self.__commands[name](*args, **kwargs) # return the output of the command
+            return self.commands[name](*args, **kwargs) # return the output of the command
         except TypeError:
             if settings["onerror"] == exit:
                 raise TypeError("Too many arguments given.")
@@ -155,17 +91,4 @@ Args:
                         kwargs[l[0]] = ":".join(l[1:])
                         args.remove(a)
 
-            self.__execute(cmd, *args, **kwargs)
-
-
-if __name__ == "__main__":
-    from subprocess import run, DEVNULL, STDOUT
-    from os import system
-    
-    try:
-        run(["ls", "/dev/null"], stdout=DEVNULL, stderr=STDOUT)
-        system("clear")
-    except FileNotFoundError:
-        system("cls")
-
-    cmdln = CommandLine(atexit=exit, onerror=exit, prompt="> ", eofexit=True, interruptexit=True)
+            self.execute(cmd, *args, **kwargs)
