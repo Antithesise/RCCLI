@@ -13,6 +13,8 @@ class CommandLine:
         for k in defaults.keys(): # for each configuration setting
             if k not in self.config: # if user hasn't specified that specific setting
                 self.config[k] = defaults[k] # set that setting to the default
+    
+        return self.__call__()
 
     def exit(self, status="0"):
         """
@@ -28,7 +30,7 @@ Args:
         settings = self.config
 
         if status == "0":
-            settings["atexit"]()
+            return settings["atexit"]()
         elif status.isdigit():
             __exit(int(status))
 
@@ -92,16 +94,16 @@ Args:
                 ans = [s.strip() for s in uin.split(" ") if s.strip()]
             except EOFError as E:
                 if settings["eofexit"]:
-                    settings["atexit"]()
+                    return settings["atexit"]()
                 else:
                     raise EOFError()
             except KeyboardInterrupt as E:
                 if settings["interruptexit"]:
-                    settings["atexit"]()
+                    return settings["atexit"]()
                 else:
                     raise KeyboardInterrupt()
             except Exception:
-                settings["onerror"]()
+                return settings["onerror"]()
 
             if not ans:
                 continue
@@ -133,4 +135,3 @@ if __name__ == "__main__":
         system("cls")
 
     cmdln = CommandLine(atexit=exit, onerror=exit, prompt="> ", eofexit=True, interruptexit=True)
-    cmdln()
