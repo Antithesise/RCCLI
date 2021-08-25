@@ -132,7 +132,5 @@ if __name__ == "__main__":
     except FileNotFoundError:
         system("cls")
 
-    print("Ready!")
-
     cmdln = CommandLine(atexit=exit, onerror=exit, prompt="> ", eofexit=True, interruptexit=True)
     cmdln()
