@@ -95,7 +95,7 @@ Args:
         name[optional]: The name of the thing to say hello to
         """
 
-        print(f"Hello {name}." if name else "Hi.")
+        return print(f"Hello {name}." if name else "Hi.") # print Hello name., or just Hi., then return None
 
     @property
     def __commands(self):
