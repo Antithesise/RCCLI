@@ -16,10 +16,14 @@ class CommandLine:
                 
                 if k == "onerror" and k not in defaults: # if atexit is set and onerror isn't
                     self.config[k] = self.config["atexit"] # set onerror to atexit
+        
+        self.commands = {}
 
     def command(self):
         def decorator_command(func):
             from functools import wraps
+
+            self.commands[func.__name__] = func
 
             @wraps(func)
             def wrapper_command(*args, **kwargs):
@@ -31,12 +35,6 @@ class CommandLine:
                     raise PermissionError("You haven't been authorised yet")
             return wrapper_command
         return decorator_command
-
-    @property
-    def commands(self):
-        attrs = [attr for attr in self.__dir__() if not attr[0] == "_"]
-
-        return {attr:self.__getattribute__(attr) for attr in attrs if callable(self.__getattribute__(attr))} # returns a dict of functions not starting with '_', and their names
 
     def execute(self, name: str, *args, **kwargs):
         settings = self.config
