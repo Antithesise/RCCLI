@@ -59,14 +59,14 @@ Args:
 
             print(f"\r{_n}({_f_args}):\n\n\r\t{_f_docs}\n") # print it all out nicely
 
-    def hi(self):
+    def hi(self, name=""):
         """
         Prints "hi"
 Args:
-        -
+        name[optional]: The name of the thing to say hello to
         """
 
-        print("hi")
+            print(f"Hello {name}." if name else "Hi.")
 
     @property
     def __commands(self):
