@@ -48,16 +48,15 @@ Args:
 
         settings = self.config
 
+        _f_docs = ""
+        _f_args = []
+
         if command in self.__commands.keys(): # self.__commands is a dict of commands names and functions
             _n = command
             _f = self.__commands[command]
 
-            _f_docs = ""
-
             if _f.__doc__:
                 _f_docs = "\n\t".join(_f.__doc__.strip().split("\n")) # reformat the function's doc strings
-
-            _f_args = []
 
             for _attr in _f.__code__.co_varnames: # for each local variable in the function
                 if _attr[0] != "_" and _attr != "settings": # if it is not named settings or starts with a '_'
@@ -66,19 +65,17 @@ Args:
             _f_args = ", ".join(_f_args) # then format that list
 
             return print(f"\r{_n}({_f_args}):\n\n\r\t{_f_docs}\n") # print it all out nicely and returns None
+        
         elif command != "":
             if settings["onerror"] == exit:
-                raise KeyError("Function not found.") # raise an error if the settings say that is allowed
+                raise KeyError("Command not found.") # raise an error if the settings say that is allowed
             else:
                 return settings["onerror"]() # otherwise return the ouput of on error func
 
         for _n, _f in self.__commands.items():
-            _f_docs = ""
 
             if _f.__doc__:
                 _f_docs = "\n\t".join(_f.__doc__.strip().split("\n"))
-
-            _f_args = []
 
             for _attr in _f.__code__.co_varnames:
                 if _attr[0] != "_" and _attr != "settings":
@@ -108,7 +105,7 @@ Args:
 
         if name not in self.__commands: # if name is not a valid command
             if settings["onerror"] == exit:
-                raise KeyError("Function not found.") # raise an error if the settings say that is allowed
+                raise KeyError("Command not found.") # raise an error if the settings say that is allowed
             else:
                 return settings["onerror"]() # otherwise return the ouput of on error func
         
