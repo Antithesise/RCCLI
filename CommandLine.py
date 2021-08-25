@@ -19,7 +19,7 @@ class CommandLine:
         
         self.commands = {}
 
-    def command(self):
+    def command(self, *args, **kwargs):
         def decorator_command(func):
             from functools import wraps
 
