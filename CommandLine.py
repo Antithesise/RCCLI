@@ -48,12 +48,12 @@ Args:
 
         settings = self.config
 
-        _f_docs = ""
-        _f_args = []
-
         if command in self.__commands.keys(): # self.__commands is a dict of commands names and functions
             _n = command
             _f = self.__commands[command]
+
+            _f_docs = ""
+            _f_args = []
 
             if _f.__doc__:
                 _f_docs = "\n\t".join(_f.__doc__.strip().split("\n")) # reformat the function's doc strings
@@ -73,6 +73,8 @@ Args:
                 return settings["onerror"]() # otherwise return the ouput of on error func
 
         for _n, _f in self.__commands.items():
+            _f_docs = ""
+            _f_args = []
 
             if _f.__doc__:
                 _f_docs = "\n\t".join(_f.__doc__.strip().split("\n"))
