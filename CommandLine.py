@@ -13,6 +13,9 @@ class CommandLine:
         for k in defaults.keys(): # for each configuration setting
             if k not in self.config: # if user hasn't specified that specific setting
                 self.config[k] = defaults[k] # set that setting to the default
+                
+                if k == "onerror" and k not in defaults: # if atexit is set and onerror isn't
+                    self.config[k] = self.config["atexit"] # set onerror to atexit
     
         return self.__call__()
 
