@@ -17,42 +17,68 @@ class Syntax:
 
         return compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])').sub('', text)
 
-    def __unicode(self) -> None:
+    def __unicode(self, text: str) -> str:
         """
-        Escapes non-ASCII characters within self.__stext
+        Escapes non-ASCII characters within text
+        
+        Args:
+            text (str): The text to be cleaned.
+
+        Returns:
+            str: ASCII text
         """
 
         from fnmatch import fnmatch
 
-        old = self.__stext
+        old = text
 
-        if not "\\u001b" in self.__stext:
+        if not "\\u001b" in text:
             try:
-                self.__stext = self.unescape(str(bytes(self.__stext, "ascii").decode("unicode-escape")))
-                self.outer.__index -= (len(old) - len(self.__stext))
+                text = self.unescape(str(bytes(text, "ascii").decode("unicode-escape")))
+                self.outer.__index -= (len(old) - len(text))
             except (UnicodeDecodeError, DeprecationWarning, UnicodeEncodeError, UnicodeError, UnicodeWarning, UnicodeTranslateError, IndexError):
-                self.__stext = old
-        elif fnmatch(self.__stext, "*\\u001b[*"):
-            self.__stext = self.__stext.replace("\\u001b[", "\u001b[")
-            self.outer.__index -= (len(old) - len(self.__stext))
+                text = old
+        elif fnmatch(text, "*\\u001b[*"):
+            text = text.replace("\\u001b[", "\u001b[")
+            self.outer.__index -= (len(old) - len(text))
 
-    def __multi_space(self) -> None:
+    def __multi_space(self, text: str) -> str:
         """
         Underline in red all areas with consecutive spaces.
+        
+        Args:
+            text (str): The text to be cleaned.
+
+        Returns:
+            str: Underlined text
         """
 
         # underline in red all areas with more than 1 consecutive spaces
-        self.__stext = self.__stext.replace("  ", "\u001b[4m\u001b[31;1m  \u001b[0m")
-        self.__stext = self.__stext.replace("\u001b[4m\u001b[31;1m  \u001b[0m ", "\u001b[4m\u001b[31;1m   \u001b[0m")
+        txt = list(text)
+
+        ins = 0
+
+        for i, c in enumerate(txt):
+            if c == " " and len(txt)-2 > i > 0:
+                if txt[i-1+ins] == " " and txt[i-2+ins] != " ":
+                    txt.insert(i, "\u001b[4m\u001b[31;1m")
+
+                    ins += 1
+                elif txt[i+1+ins] != " " and txt[i-1+ins] == " ":
+                    txt.insert(i+2, "\u001b[0m")
+
+                    ins += 1
+
+        return "".join(txt)
 
     def __call__(self, text, underline=True, valid=False):
         # define variable for modified text
         self.__stext = text
         # modify the text in that variable (order matters)
         if not valid:
-            self.__unicode()
+            self.__unicode(self.__stext)
         if underline or valid:
-            self.__multi_space()
+            self.__multi_space(self.__stext)
         if valid:
             return "\\x1b[4m" not in repr(self.__stext) # return if text is valid
         return self.__stext # return the variable
