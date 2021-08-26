@@ -1,3 +1,6 @@
+from typing import Any
+
+
 class CommandLine:
     def __init__(self, **config):
         self.config = {k.lower():v for k, v in config.items()} # self.config = config, but all keys are loweraces
@@ -19,13 +22,21 @@ class CommandLine:
         
         self.commands = {}
 
-    def reset(self):
+    def reset(self) -> None:
+        """
+        Reset the terminal settings to the default settings.
+        """
+
         from termios import tcsetattr, TCSADRAIN
         from sys import stdin
 
-        tcsetattr(stdin.fileno, TCSADRAIN, self.__old_settings)
+        return tcsetattr(stdin.fileno, TCSADRAIN, self.__old_settings)
 
-    def command(self, *args, **kwargs):
+    def command(self, *args, **kwargs) -> Any:
+        """
+        Decorator that adds a function as a command.
+        """
+
         def decorator_command(func):
             from functools import wraps
 
@@ -42,7 +53,23 @@ class CommandLine:
             return wrapper_command
         return decorator_command
 
-    def execute(self, name: str, *args, **kwargs):
+    def execute(self, name: str, *args, **kwargs) -> Any:
+        """
+        Execute a command.
+
+        Args:
+            name (str): the name of the command to be called.
+            args (any): arguments to be supplied to the command.
+            kwargs (any): named arguments to be supplied to the command.
+
+        Raises:
+            KeyError: [description]
+            TypeError: [description]
+
+        Returns:
+            Any: return the output of the command or ONERROR.
+        """
+
         settings = self.config
 
         if name not in self.commands: # if name is not a valid command

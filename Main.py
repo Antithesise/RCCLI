@@ -1,17 +1,19 @@
 from CommandLine import CommandLine
+from typing import Any
 
 CLI = CommandLine(atexit=exit, onerror=exit, prompt="> ", eofexit=True, interruptexit=True)
 
 @CLI.command()
-def exit(status="0"):
+def exit(status="0") -> Any:
+    """Exit with a given status code.
+
+    Args:
+        status (str, optional): The status to exit with. Prints status if NaN and status will = 0 (I.e., a failure). Defaults to "0".
+
+    Returns:
+        Any: [description]
     """
-    If status is 0 (default), the commandline exits by calling
-ATEXIT. If status is an integer, the commandline will exit by
-calling system.exit() with that integer If status is a string, this
-will be printed and the exit status will be 1 (i.e., failure).
-Args:
-    status[optional]: The exit status
-    """
+
     from sys import exit as exit
 
     settings = CLI.config
@@ -24,11 +26,17 @@ Args:
     return print(status) or status
 
 @CLI.command()
-def help(command=""):
-    """
-    Prints every command and how to use them.
+def help(command="") -> None:
+    """Print help for a given command.
+
     Args:
-    command[optional]: The name of the command to get help on
+        command (str, optional): [description]. Defaults to "".
+
+    Raises:
+        KeyError: [description]
+
+    Returns:
+        NoneType: returns None
     """
 
     settings = CLI.config
@@ -73,11 +81,15 @@ def help(command=""):
         print(f"\r{n}({fargs}):\n\n\r\t{fdocs}\n")
 
 @CLI.command()
-def hi(name=""):
+def hi(name="") -> None:
     """
-    Prints "hi"
+    Print `Hi.` or `Hello {name}.` if supplied.
+
     Args:
-    name[optional]: The name of the thing to say hello to
+        name (str, optional): The name of the object to say hi to. Defaults to "".
+
+    Returns:
+        NoneType: returns None
     """
 
     return print(f"Hello {name}." if name else "Hi.") # print Hello name., or just Hi., then return None
