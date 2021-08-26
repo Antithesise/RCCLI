@@ -59,6 +59,10 @@ class CommandLine:
             else:
                 return settings["onerror"]()
 
+    def run(self, auth=None):
+        self.auth = auth
+        self()
+
     def __call__(self):
         from termios import tcgetattr
         from sys import stdin, stdout
@@ -69,7 +73,7 @@ class CommandLine:
 
         settings = self.config
 
-        while True:
+        while self.auth != getenv("CODE"):
             self.auth = getpass("Password: ")
             if self.auth == getenv("CODE"):
                 break

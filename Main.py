@@ -82,4 +82,4 @@ def hi(name=""):
 
     return print(f"Hello {name}." if name else "Hi.") # print Hello name., or just Hi., then return None
 
-CLI()
+CLI().run()
