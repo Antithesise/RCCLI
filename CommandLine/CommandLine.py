@@ -10,11 +10,12 @@ class CommandLine:
         Python based utility for creating CLIs and other commandline-driven utilities.
 
         Args:
-            atexit (object): The object to be called at the exiting of the program. Defaults to `exit`.
-            onerror (object): The object to be called in the event of a program error. Defaults to `exit`.
-            prompt (str): The str to prompt the user for input. Defaults to "> ".
-            eofexit (bool): Whether to exit on EOF (Ctrl+D).
-            interruptexit (bool): Whether to exit on Keyboard Interrupt (Ctrl+C).
+            atexit (object, optional): The object to be called at the exiting of the program. Defaults to `exit`.
+            onerror (object, optional): The object to be called in the event of a program error. Defaults to `exit`.
+            prompt (str, optional): The str to prompt the user for input. Defaults to "> ".
+            eofexit (bool, optional): Whether to exit on EOF (Ctrl+D).
+            interruptexit (bool, optional): Whether to exit on Keyboard Interrupt (Ctrl+C).
+            password (Union[str, NoneType], optional): The password for the application. Defaults tp `None`
 
         Returns:
             CommandLine: An instance of the CommandLine class.
@@ -28,6 +29,7 @@ class CommandLine:
             "prompt": "> ",
             "eofexit": True,
             "interruptexit": True,
+            "password": None
         }
 
         for k in defaults.keys(): # for each configuration setting
@@ -54,9 +56,12 @@ class CommandLine:
 
         return tcsetattr(stdin.fileno, TCSADRAIN, self.__old_settings)
 
-    def command(self, *args, **kwargs) -> Any:
+    def command(self, auth: bool=False) -> Any:
         """
         Decorator that adds a function as a command.
+
+        Args:
+            auth (bool, optional): Whether authentication is needed to perform the function. Ignored if password is not specified. Defaults to `False`.
 
         Returns:
             Any: returns the output of the function.
@@ -65,16 +70,18 @@ class CommandLine:
         def decorator_command(func):
             from functools import wraps
 
+            settings = self.config
+
             self.commands[func.__name__] = func
 
             @wraps(func)
             def wrapper_command(*args, **kwargs):
                 from os import environ
 
-                if self.auth == environ["CODE"]:
+                if self.auth == settings["password"] or not auth:
                     return func(*args, **kwargs)
                 else:
-                    raise PermissionError("You haven't been authorised yet")
+                    self.auth()
             return wrapper_command
         return decorator_command
 
@@ -112,8 +119,30 @@ class CommandLine:
                 return settings["onerror"]()
 
     def run(self, auth=None):
+        settings = self.config
+
         self.auth = auth
+
+        if self.auth != None:
+            if settings["onerror"] == exit:
+                assert settings["password"] != None # raise an error if the settings say that is allowed
+            else:
+                return settings["onerror"]() # otherwise return the ouput of on error func
+        
         self()
+
+    def auth(self) -> None:
+        from CommandLine.ext import getpass
+
+        settings = self.config
+
+        if settings["password"] != None:
+            while self.auth != settings["password"]:
+                self.auth = getpass("Password: ")
+                if self.auth == settings["password"]:
+                    break
+                print("Incorrect!")
+        
 
     def __call__(self) -> Any:
         """
@@ -124,23 +153,18 @@ class CommandLine:
         """
 
 
-        from CommandLine.ext import getpass
         from CommandLine.ext import Syntax
         from termios import tcgetattr
         from sys import stdin, stdout
         from tty import setraw
-        from os import getenv
 
         settings = self.config
-
-        while self.auth != getenv("CODE"):
-            self.auth = getpass("Password: ")
-            if self.auth == getenv("CODE"):
-                break
-            print("Incorrect!")
-
-        self.__syntax = self.Syntax(self) # create instance of Syntax class
+        
         self.__old_settings = tcgetattr(stdin) # store old tty settings
+
+        self.auth() # run authorisation handler
+
+        sx = Syntax(self) # create instance of Syntax class
 
         while True:
             uinput = ""
@@ -170,7 +194,7 @@ class CommandLine:
                     else:
                         return settings["onerror"]()
                 elif char in [10, 13]: # enter
-                    if self.__syntax(uinput, underline=True, valid=True):
+                    if sx(uinput, underline=True, valid=True):
                         stdout.write("\r\nechoing... " + uinput + "\n\r")
                         self.reset()
                         print()
@@ -195,9 +219,9 @@ class CommandLine:
 
                     self.__index -= 1
 
-                uinput = self.__syntax(uinput, False)
+                uinput = sx(uinput, False)
 
-                stdout.write("\r\u001b[0K" + self.__syntax(uinput) + "\r" + ("\u001b[" + str(self.__index) + "C" if self.__index > 0 else ""))
+                stdout.write("\r\u001b[0K" + sx(uinput) + "\r" + ("\u001b[" + str(self.__index) + "C" if self.__index > 0 else ""))
                 stdout.flush()
 
                 self.reset()
