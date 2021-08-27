@@ -133,7 +133,18 @@ class CommandLine:
             else:
                 return settings["onerror"]()
 
-    def run(self, auth=None):
+    def run(self, auth=None) -> 'Any':
+        """
+        Runs the commandline utility created by the user.
+
+        Args:
+            auth (Union[NoneType, str], optional): The auth password (if any) to authorise the utility at runtime.
+
+        Returns:
+            Any: Returns the output of either ONERROR or ATEXIT.
+        """
+
+
         settings = self.config
 
         self.auth = auth
@@ -144,9 +155,17 @@ class CommandLine:
             else:
                 return settings["onerror"]() # otherwise return the ouput of on error func
         
-        self()
+        return self()
 
     def auth(self) -> None:
+        """
+        Get the user to authorise themselves.
+
+        Returns:
+            NoneType: None.
+        """
+
+
         from CommandLine.ext import getpass
 
         settings = self.config
