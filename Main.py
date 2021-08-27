@@ -7,7 +7,7 @@ if TYPE_CHECKING: # import for typechecking, but not at runtime
 CLI = CommandLine(atexit=exit, onerror=exit, prompt="> ", eofexit=True, interruptexit=True)
 
 @CLI.command()
-def exit(status="0") -> Any:
+def exit(status="0") -> 'Any':
     """Exit with a given status code.
 
     Args:

@@ -68,7 +68,7 @@ class CommandLine:
 
         return tcsetattr(stdin.fileno, TCSADRAIN, self.__old_settings)
 
-    def command(self, auth: bool=False) -> Any:
+    def command(self, auth: bool=False) -> 'Any':
         """
         Decorator that adds a function as a command.
 
