@@ -1,4 +1,8 @@
-from typing import Any
+from typing import TYPE_CHECKING
+
+
+if TYPE_CHECKING: # import for typechecking, but not at runtime
+    from typing import Any
 
 class CommandLine:
     """
