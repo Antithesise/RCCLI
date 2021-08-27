@@ -76,8 +76,6 @@ class CommandLine:
 
             @wraps(func)
             def wrapper_command(*args, **kwargs):
-                from os import environ
-
                 if self.auth == settings["password"] or not auth:
                     return func(*args, **kwargs)
                 else:
