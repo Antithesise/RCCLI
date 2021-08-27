@@ -15,9 +15,14 @@ def getpass(prompt) -> str:
     from sys import stdin, stdout
     from tty import setraw
 
+    err = False
+
     try:
         from termios import tcgetattr,  tcsetattr, TCSADRAIN # Only available on Unix terminals (like bash). Used to make stdin raw
     except ImportError:
+        err = True
+    
+    if err:
         raise ModuleNotFoundError("Please run on a TTY-supporting (Unix) terminal.")
 
     __old_settings = tcgetattr(stdin) # store old tty settings

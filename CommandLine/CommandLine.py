@@ -39,9 +39,14 @@ class CommandLine:
             "password": None
         }
 
+        err = False
+
         try:
             import termios # Only available on Unix terminals (like bash). Used to make stdin raw
         except ImportError:
+            err = True
+        
+        if err:
             raise ModuleNotFoundError("Please run on a TTY-supporting (Unix) terminal.")
 
         for k in defaults.keys(): # for each configuration setting
@@ -95,7 +100,7 @@ class CommandLine:
             return wrapper_command
         return decorator_command
 
-    def execute(self, name: str, *args, **kwargs) -> Any:
+    def execute(self, name: str, *args, **kwargs) -> 'Any':
         """
         Execute a command.
 
@@ -154,7 +159,7 @@ class CommandLine:
                 print("Incorrect!")
         
 
-    def __call__(self) -> Any:
+    def __call__(self) -> 'Any':
         """
         Runs the commandline utility created by the user.
 
