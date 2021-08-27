@@ -22,7 +22,7 @@ class CommandLine:
             password (Union[str, NoneType], optional): The password for the application. Defaults tp `None`
 
         Raises:
-            
+            ModuleNotFOundError: When running on a terminal without TTY-support.
 
         Returns:
             CommandLine: An instance of the CommandLine class.
@@ -42,7 +42,7 @@ class CommandLine:
         try:
             import termios # Only available on Unix terminals (like bash). Used to make stdin raw
         except ImportError:
-            raise WindowsError("Running on Windows. Please run on a tty-supporting (Unix) terminal.")
+            raise ModuleNotFoundError("Please run on a TTY-supporting (Unix) terminal.")
 
         for k in defaults.keys(): # for each configuration setting
             if k not in self.config: # if user hasn't specified that specific setting
