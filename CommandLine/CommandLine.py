@@ -21,6 +21,9 @@ class CommandLine:
             interruptexit (bool, optional): Whether to exit on Keyboard Interrupt (Ctrl+C).
             password (Union[str, NoneType], optional): The password for the application. Defaults tp `None`
 
+        Raises:
+            
+
         Returns:
             CommandLine: An instance of the CommandLine class.
         """
@@ -35,6 +38,11 @@ class CommandLine:
             "interruptexit": True,
             "password": None
         }
+
+        try:
+            import termios
+        except ImportError:
+            raise WindowsError("Running on Windows. Please run on a tty-supporting (Unix) terminal.")
 
         for k in defaults.keys(): # for each configuration setting
             if k not in self.config: # if user hasn't specified that specific setting
