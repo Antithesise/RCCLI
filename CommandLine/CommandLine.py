@@ -40,7 +40,7 @@ class CommandLine:
         }
 
         try:
-            import termios
+            import termios # Only available on Unix terminals (like bash). Used to make stdin raw
         except ImportError:
             raise WindowsError("Running on Windows. Please run on a tty-supporting (Unix) terminal.")
 
