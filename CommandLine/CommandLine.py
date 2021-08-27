@@ -1,8 +1,25 @@
 from typing import Any
 
-
 class CommandLine:
+    """
+    Python based utility for creating CLIs and other commandline-driven utilities.
+    """
+
     def __init__(self, **config):
+        """
+        Python based utility for creating CLIs and other commandline-driven utilities.
+
+        Args:
+            atexit (object): The object to be called at the exiting of the program. Defaults to `exit`.
+            onerror (object): The object to be called in the event of a program error. Defaults to `exit`.
+            prompt (str): The str to prompt the user for input. Defaults to "> ".
+            eofexit (bool): Whether to exit on EOF (Ctrl+D).
+            interruptexit (bool): Whether to exit on Keyboard Interrupt (Ctrl+C).
+
+        Returns:
+            CommandLine: An instance of the CommandLine class.
+        """
+
         self.config = {k.lower():v for k, v in config.items()} # self.config = config, but all keys are loweraces
 
         defaults = { # default configuration settings
@@ -19,12 +36,17 @@ class CommandLine:
                 
                 if k == "onerror" and k not in defaults: # if atexit is set and onerror isn't
                     self.config[k] = self.config["atexit"] # set onerror to atexit
+
+                self.__setattr__(k, self.config[k])
         
         self.commands = {}
 
     def reset(self) -> None:
         """
         Reset the terminal settings to the default settings.
+
+        Returns:
+            NoneType: returns None
         """
 
         from termios import tcsetattr, TCSADRAIN
@@ -35,6 +57,9 @@ class CommandLine:
     def command(self, *args, **kwargs) -> Any:
         """
         Decorator that adds a function as a command.
+
+        Returns:
+            Any: returns the output of the function.
         """
 
         def decorator_command(func):
@@ -90,11 +115,19 @@ class CommandLine:
         self.auth = auth
         self()
 
-    def __call__(self):
+    def __call__(self) -> Any:
+        """
+        Runs the commandline utility created by the user.
+
+        Returns:
+            Any: Returns the output of either ONERROR or ATEXIT.
+        """
+
+
+        from CommandLine.ext import getpass
+        from CommandLine.ext import Syntax
         from termios import tcgetattr
         from sys import stdin, stdout
-        from Getpass import getpass
-        from Syntax import Syntax
         from tty import setraw
         from os import getenv
 
@@ -135,7 +168,7 @@ class CommandLine:
                     if settings["eofexit"]:
                         return settings["atexit"]()
                     else:
-                        raise EOFError()
+                        return settings["onerror"]()
                 elif char in [10, 13]: # enter
                     if self.__syntax(uinput, underline=True, valid=True):
                         stdout.write("\r\nechoing... " + uinput + "\n\r")
