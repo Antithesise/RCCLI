@@ -1,17 +1,24 @@
 def getpass(prompt) -> str:
-    from termios import tcgetattr,  tcsetattr, TCSADRAIN
-    from sys import stdin, stdout
-    from tty import setraw
-
     """
     This function gets input from the user without echoing their characters. Unlike the stdlib module, this functions echos '•' instead of the user's keystrokes.
 
     Args:
         prompt (str): The string to prompt the user with.
 
+    Raises:
+        ModuleNotFOundError: When running on a terminal without TTY-support.
+
     Returns:
         str: The password entered by the user.
     """
+
+    from sys import stdin, stdout
+    from tty import setraw
+
+    try:
+        from termios import tcgetattr,  tcsetattr, TCSADRAIN # Only available on Unix terminals (like bash). Used to make stdin raw
+    except ImportError:
+        raise ModuleNotFoundError("Please run on a TTY-supporting (Unix) terminal.")
 
     __old_settings = tcgetattr(stdin) # store old tty settings
 
