@@ -19,7 +19,7 @@ class CommandLine:
             prompt (str, optional): The str to prompt the user for input. Defaults to "> ".
             eofexit (bool, optional): Whether to exit on EOF (Ctrl+D).
             interruptexit (bool, optional): Whether to exit on Keyboard Interrupt (Ctrl+C).
-            password (Union[str, None], optional): The password for the application. Defaults tp `None`
+            password (Union[str, None], optional): The password for the application. Defaults tp `None`.
 
         Raises:
             ModuleNotFOundError: When running on a terminal without TTY-support.
@@ -65,7 +65,7 @@ class CommandLine:
         Reset the terminal settings to the default settings.
 
         Returns:
-            None: returns None
+            None: returns None.
         """
 
         from termios import tcsetattr, TCSADRAIN
@@ -102,21 +102,22 @@ class CommandLine:
         return decorator_command
 
     def help(self, command="") -> None:
-        """Print help for a given command.
+        """
+        Print help for a given command.
 
         Args:
-            command (str, optional): [description]. Defaults to "".
+            command (str, optional): the name of the command to get help on. Defaults to "".
 
         Raises:
-            KeyError: [description]
+            KeyError: If command does not match any registered command.
 
         Returns:
-            None: returns None
+            None: returns None.
         """
 
         settings = self.config
 
-        if command in self.commands.keys(): # CLI.commands is a dict of commands names and functions
+        if command in self.commands.keys(): # self.commands is a dict of commands names and functions
             n = command
             f = self.commands[command]
 
@@ -155,14 +156,15 @@ class CommandLine:
 
             print(f"\r{n}({fargs}):\n\n\r\t{fdocs}\n")
 
-    def exit(self, status="0") -> 'Any':
-        """Exit with a given status code.
+    def exit(self, status: str="0") -> 'Union[str, Any]':
+        """
+        Exit with a given status code.
 
         Args:
             status (str, optional): The status to exit with. Prints status if NaN and status will = 0 (I.e., a failure). Defaults to "0".
 
         Returns:
-            Any: [description]
+            Union[str, Any]: status, or the output of ATEXIT.
         """
 
         from sys import exit as _exit
@@ -174,7 +176,7 @@ class CommandLine:
         elif status.isdigit():
             _exit(int(status))
 
-        return print(status) or status
+        return print(status) or status # returns status as print outputs None
 
     def execute(self, name: str, *args, **kwargs) -> 'Union[Any, None]':
         """
@@ -186,8 +188,8 @@ class CommandLine:
             kwargs (any): named arguments to be supplied to the command.
 
         Raises:
-            KeyError: [description]
-            TypeError: [description]
+            KeyError: If the command is not found.
+            TypeError: Incorrect number of arguments given.
 
         Returns:
             Union[Any, None]: return the output of the command, None if execution is cancelled or ONERROR.
@@ -205,7 +207,7 @@ class CommandLine:
             return self.commands[name](*args, **kwargs) # return the output of the command
         except TypeError:
             if settings["onerror"] == exit:
-                raise TypeError("Too many arguments given.")
+                raise TypeError("Incorrect number of arguments given.")
             else:
                 return settings["onerror"]()
 
