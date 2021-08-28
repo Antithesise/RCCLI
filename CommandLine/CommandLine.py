@@ -155,7 +155,7 @@ class CommandLine:
 
             print(f"\r{n}({fargs}):\n\n\r\t{fdocs}\n")
 
-    def exit(status="0") -> 'Any':
+    def exit(self, status="0") -> 'Any':
         """Exit with a given status code.
 
         Args:
@@ -167,7 +167,7 @@ class CommandLine:
 
         from sys import exit as _exit
 
-        settings = CLI.config
+        settings = self.config
 
         if status == "0":
             return settings["atexit"]()
