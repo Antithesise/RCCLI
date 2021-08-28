@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING
+from _typeshed import NoneType
+from typing import TYPE_CHECKING, Union
 
 if TYPE_CHECKING: # import for typechecking, but not at runtime
     from typing import Any
@@ -73,7 +74,7 @@ class CommandLine:
 
         return tcsetattr(stdin.fileno, TCSADRAIN, self.__old_settings)
 
-    def command(self, auth: bool=False) -> 'Any':
+    def command(self, auth: bool=False) -> 'Union[Any, NoneType]':
         """
         Decorator that adds a function as a command.
 
@@ -81,7 +82,7 @@ class CommandLine:
             auth (bool, optional): Whether authentication is needed to perform the function. Ignored if password is not specified. Defaults to `False`.
 
         Returns:
-            Any: returns the output of the function.
+            Union[Any, NoneType]: returns the output of the function or None if execution is cancelled.
         """
 
         def decorator_command(func):
@@ -93,14 +94,15 @@ class CommandLine:
 
             @wraps(func)
             def wrapper_command(*args, **kwargs):
-                if self.auth == settings["password"] or not auth:
-                    return func(*args, **kwargs)
-                else:
-                    self.authu()
+                if self.auth != settings["password"] != None and auth:
+                    if self.authu() == False:
+                        return print("Command exited before execution")
+
+                return func(*args, **kwargs)
             return wrapper_command
         return decorator_command
 
-    def execute(self, name: str, *args, **kwargs) -> 'Any':
+    def execute(self, name: str, *args, **kwargs) -> 'Union[Any, NoneType]':
         """
         Execute a command.
 
@@ -114,7 +116,7 @@ class CommandLine:
             TypeError: [description]
 
         Returns:
-            Any: return the output of the command or ONERROR.
+            Union[Any, NoneType]: return the output of the command, None if execution is cancelled or ONERROR.
         """
 
         settings = self.config
@@ -162,7 +164,7 @@ class CommandLine:
         Get the user to authorise themselves.
 
         Returns:
-            NoneType: None.
+            Union[NoneType, bool]: None, or False if user cancelled.
         """
 
 
@@ -175,6 +177,8 @@ class CommandLine:
                 self.auth = getpass("Password: ")
                 if self.auth == settings["password"]:
                     break
+                elif self.auth in [chr(3),chr(5)]:
+                    return False
                 print("Incorrect!")
         
 
