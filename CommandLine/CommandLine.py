@@ -155,6 +155,27 @@ class CommandLine:
 
             print(f"\r{n}({fargs}):\n\n\r\t{fdocs}\n")
 
+    def exit(status="0") -> 'Any':
+        """Exit with a given status code.
+
+        Args:
+            status (str, optional): The status to exit with. Prints status if NaN and status will = 0 (I.e., a failure). Defaults to "0".
+
+        Returns:
+            Any: [description]
+        """
+
+        from sys import exit as _exit
+
+        settings = CLI.config
+
+        if status == "0":
+            return settings["atexit"]()
+        elif status.isdigit():
+            _exit(int(status))
+
+        return print(status) or status
+
     def execute(self, name: str, *args, **kwargs) -> 'Union[Any, None]':
         """
         Execute a command.
