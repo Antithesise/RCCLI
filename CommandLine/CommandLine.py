@@ -1,8 +1,8 @@
 from _typeshed import NoneType
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING: # import for typechecking, but not at runtime
-    from typing import Any
+    from typing import Union, Any
 
 
 class CommandLine:
