@@ -39,7 +39,7 @@ def help(command="") -> None:
         KeyError: [description]
 
     Returns:
-        NoneType: returns None
+        None: returns None
     """
 
     settings = CLI.config
@@ -92,9 +92,10 @@ def hi(name="") -> None:
         name (str, optional): The name of the object to say hi to. Defaults to "".
 
     Returns:
-        NoneType: returns None
+        None: returns None
     """
 
     return print(f"Hello {name}." if name else "Hi.") # print Hello name., or just Hi., then return None
 
-CLI().run()
+if __name__ == "__main__":
+    CLI().run()

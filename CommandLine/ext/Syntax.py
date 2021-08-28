@@ -1,4 +1,13 @@
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING: # import for typechecking, but not at runtime
+    from typing import Union, Any
+
 class Syntax:
+    """
+    A class for adding syntax highlighting to a piece of text.
+    """
+
     def __init__(self, outerinstance):
         self.outer = outerinstance
     
@@ -71,7 +80,19 @@ class Syntax:
 
         return "".join(txt)
 
-    def __call__(self, text, underline=True, valid=False):
+    def __call__(self, text, underline=True, valid=False) -> Union[str, bool]:
+        """
+        Returns the callable that will be executed when the function is called .
+
+        Args:
+            text ([type]): The text to apply syntax highlighting to.
+            underline (bool, optional): Whether to underline multiple spaces. Defaults to True.
+            valid (bool, optional): Whether to check if the text contains any errors. Defaults to False.
+
+        Returns:
+            Union[str, bool]: The highlighted text, or whether the text is valid.
+        """
+
         # define variable for modified text
         self.__stext = text
         # modify the text in that variable (order matters)

@@ -1,4 +1,3 @@
-from _typeshed import NoneType
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING: # import for typechecking, but not at runtime
@@ -20,7 +19,7 @@ class CommandLine:
             prompt (str, optional): The str to prompt the user for input. Defaults to "> ".
             eofexit (bool, optional): Whether to exit on EOF (Ctrl+D).
             interruptexit (bool, optional): Whether to exit on Keyboard Interrupt (Ctrl+C).
-            password (Union[str, NoneType], optional): The password for the application. Defaults tp `None`
+            password (Union[str, None], optional): The password for the application. Defaults tp `None`
 
         Raises:
             ModuleNotFOundError: When running on a terminal without TTY-support.
@@ -66,7 +65,7 @@ class CommandLine:
         Reset the terminal settings to the default settings.
 
         Returns:
-            NoneType: returns None
+            None: returns None
         """
 
         from termios import tcsetattr, TCSADRAIN
@@ -74,7 +73,7 @@ class CommandLine:
 
         return tcsetattr(stdin.fileno, TCSADRAIN, self.__old_settings)
 
-    def command(self, auth: bool=False) -> 'Union[Any, NoneType]':
+    def command(self, auth: bool=False) -> 'Union[Any, None]':
         """
         Decorator that adds a function as a command.
 
@@ -82,7 +81,7 @@ class CommandLine:
             auth (bool, optional): Whether authentication is needed to perform the function. Ignored if password is not specified. Defaults to `False`.
 
         Returns:
-            Union[Any, NoneType]: returns the output of the function or None if execution is cancelled.
+            Union[Any, None]: returns the output of the function or None if execution is cancelled.
         """
 
         def decorator_command(func):
@@ -102,7 +101,7 @@ class CommandLine:
             return wrapper_command
         return decorator_command
 
-    def execute(self, name: str, *args, **kwargs) -> 'Union[Any, NoneType]':
+    def execute(self, name: str, *args, **kwargs) -> 'Union[Any, None]':
         """
         Execute a command.
 
@@ -116,7 +115,7 @@ class CommandLine:
             TypeError: [description]
 
         Returns:
-            Union[Any, NoneType]: return the output of the command, None if execution is cancelled or ONERROR.
+            Union[Any, None]: return the output of the command, None if execution is cancelled or ONERROR.
         """
 
         settings = self.config
@@ -140,7 +139,7 @@ class CommandLine:
         Runs the commandline utility created by the user.
 
         Args:
-            auth (Union[NoneType, str], optional): The auth password (if any) to authorise the utility at runtime.
+            auth (Union[None, str], optional): The auth password (if any) to authorise the utility at runtime.
 
         Returns:
             Any: Returns the output of either ONERROR or ATEXIT.
@@ -164,7 +163,7 @@ class CommandLine:
         Get the user to authorise themselves.
 
         Returns:
-            Union[NoneType, bool]: None, or False if user cancelled.
+            Union[None, bool]: None, or False if user cancelled.
         """
 
 
