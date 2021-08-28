@@ -96,7 +96,7 @@ class CommandLine:
                 if self.auth == settings["password"] or not auth:
                     return func(*args, **kwargs)
                 else:
-                    self.auth()
+                    self.authu()
             return wrapper_command
         return decorator_command
 
@@ -157,7 +157,7 @@ class CommandLine:
         
         return self()
 
-    def auth(self) -> None:
+    def authu(self) -> None:
         """
         Get the user to authorise themselves.
 
@@ -196,7 +196,7 @@ class CommandLine:
         
         self.__old_settings = tcgetattr(stdin) # store old tty settings
 
-        self.auth() # run authorisation handler
+        self.authu() # run authorisation handler
 
         sx = Syntax(self) # create instance of Syntax class
 
