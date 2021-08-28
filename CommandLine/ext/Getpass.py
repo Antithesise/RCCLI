@@ -1,3 +1,8 @@
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING: # import for typechecking, but not at runtime
+    from typing import Union, Any
+
 def getpass(prompt) -> str:
     """
     This function gets input from the user without echoing their characters. Unlike the stdlib module, this functions echos '•' instead of the user's keystrokes.
