@@ -6,9 +6,9 @@ if __name__ == "__main__":
 else:
     class CLI:
         def command():
-            def decorator_command(func: function):
+            def decorator_command(func: object):
                 from functools import wraps
-                
+
                 @wraps(func)
                 def wrapper_command(*args, **kwargs):
 
