@@ -3,6 +3,20 @@ from typing import Union, Any
 
 if __name__ == "__main__":
     CLI = CommandLine(atexit=exit, onerror=exit, prompt="> ", eofexit=True, interruptexit=True)
+else:
+    class CLI:
+        def command():
+            def decorator_command(func: function):
+                from functools import wraps
+                
+                @wraps(func)
+                def wrapper_command(*args, **kwargs):
+
+                    return func(*args, **kwargs)
+
+                return wrapper_command
+
+            return decorator_command
 
 @CLI.command()
 def hi(name="") -> None:
