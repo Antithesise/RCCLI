@@ -3,3 +3,4 @@
 .env
 *.code-workspace
 **/Docs/*.py
+**/Tests/
