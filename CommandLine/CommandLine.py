@@ -75,7 +75,7 @@ class CommandLine:
             Union[Any, None]: returns the output of the function or None if execution is cancelled.
         """
 
-        def decorator_command(func):
+        def decorator_command(func: function):
             from functools import wraps
 
             settings = self.config

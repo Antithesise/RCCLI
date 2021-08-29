@@ -1,8 +1,8 @@
 from CommandLine import CommandLine
 from typing import Union, Any
 
-
-CLI = CommandLine(atexit=exit, onerror=exit, prompt="> ", eofexit=True, interruptexit=True)
+if __name__ == "__main__":
+    CLI = CommandLine(atexit=exit, onerror=exit, prompt="> ", eofexit=True, interruptexit=True)
 
 @CLI.command()
 def hi(name="") -> None:
