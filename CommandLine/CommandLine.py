@@ -16,7 +16,7 @@ class CommandLine:
             prompt (str, optional): The str to prompt the user for input. Defaults to "> ".
             eofexit (bool, optional): Whether to exit on EOF (Ctrl+D).
             interruptexit (bool, optional): Whether to exit on Keyboard Interrupt (Ctrl+C).
-            password (Union[str, None], optional): The password for the application. Defaults tp `None`.
+            password (Union[str, None], optional): The password for the application. Defaults to `None`.
 
         Raises:
             ModuleNotFoundError: When running on a terminal without TTY-support.
