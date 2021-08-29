@@ -1,8 +1,5 @@
 from CommandLine import CommandLine
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING: # import for typechecking, but not at runtime
-    from typing import Union, Any
+from typing import Union, Any
 
 
 CLI = CommandLine(atexit=exit, onerror=exit, prompt="> ", eofexit=True, interruptexit=True)
@@ -16,7 +13,7 @@ def hi(name="") -> None:
         name (str, optional): The name of the object to say hi to. Defaults to "".
 
     Returns:
-        None: returns None
+        None: returns None.
     """
 
     return print(f"Hello {name}." if name else "Hi.") # print Hello name., or just Hi., then return None
