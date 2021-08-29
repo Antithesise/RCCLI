@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING: # import for typechecking, but not at runtime
     from typing import Union, Any
 
+
 def getpass(prompt) -> str:
     """
     This function gets input from the user without echoing their characters. Unlike the stdlib module, this functions echos '•' instead of the user's keystrokes.
@@ -16,19 +17,14 @@ def getpass(prompt) -> str:
     Returns:
         str: The password entered by the user.
     """
+    
+    from CommandLine.ext.CheckUnix import check
 
+    check()
+
+    from termios import tcgetattr,  tcsetattr, TCSADRAIN
     from sys import stdin, stdout
     from tty import setraw
-
-    err = False
-
-    try:
-        from termios import tcgetattr,  tcsetattr, TCSADRAIN # Only available on Unix terminals (like bash). Used to make stdin raw
-    except ImportError:
-        err = True
-    
-    if err:
-        raise ModuleNotFoundError("Please run on a TTY-supporting (Unix) terminal.")
 
     __old_settings = tcgetattr(stdin) # store old tty settings
 

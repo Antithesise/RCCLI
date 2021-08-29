@@ -28,6 +28,10 @@ class CommandLine:
             CommandLine: An instance of the CommandLine class.
         """
 
+        from CommandLine.ext.CheckUnix import check
+
+        check()
+
         self.config = {k.lower():v for k, v in config.items()} # self.config = config, but all keys are loweraces
 
         defaults = { # default configuration settings
@@ -38,16 +42,6 @@ class CommandLine:
             "interruptexit": True,
             "password": None
         }
-
-        err = False
-
-        try:
-            import termios # Only available on Unix terminals (like bash). Used to make stdin raw
-        except ImportError:
-            err = True
-        
-        if err:
-            raise ModuleNotFoundError("Please run on a TTY-supporting (Unix) terminal.")
 
         for k in defaults.keys(): # for each configuration setting
             if k not in self.config: # if user hasn't specified that specific setting
@@ -265,7 +259,6 @@ class CommandLine:
         Returns:
             Any: Returns the output of either ONERROR or ATEXIT.
         """
-
 
         from CommandLine.ext import Syntax
         from termios import tcgetattr

@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING: # import for typechecking, but not at runtime
     from typing import Union, Any
 
+
 class Syntax:
     """
     A class for adding syntax highlighting to a piece of text.
