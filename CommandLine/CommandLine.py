@@ -19,7 +19,7 @@ class CommandLine:
             password (Union[str, None], optional): The password for the application. Defaults tp `None`.
 
         Raises:
-            ModuleNotFOundError: When running on a terminal without TTY-support.
+            ModuleNotFoundError: When running on a terminal without TTY-support.
 
         Returns:
             CommandLine: An instance of the CommandLine class.

@@ -4,7 +4,7 @@ from typing import Union, Any
 if __name__ == "__main__":
     CLI = CommandLine(atexit=exit, onerror=exit, prompt="> ", eofexit=True, interruptexit=True)
 else:
-    class CLI:
+    class CLI: # when running pydoc make sure that CLI.command is defined without triggering CommandLine
         def command():
             def decorator_command(func: object):
                 from functools import wraps
