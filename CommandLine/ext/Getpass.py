@@ -9,7 +9,7 @@ def getpass(prompt) -> str:
         prompt (str): The string to prompt the user with.
 
     Raises:
-        ModuleNotFOundError: When running on a terminal without TTY-support.
+        ModuleNotFoundError: When running on a terminal without TTY-support.
 
     Returns:
         str: The password entered by the user.
