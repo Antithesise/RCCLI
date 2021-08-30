@@ -9,6 +9,8 @@ Welcome to CommandLine's documentation!
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
+   
+   CommandLine
 
 
 
