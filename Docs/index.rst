@@ -11,6 +11,8 @@ Welcome to CommandLine's documentation!
    :caption: Contents:
    
    CommandLine
+   Syntax <ext/Syntax.rst>
+   getpass <ext/Getpass.rst>
 
 
 

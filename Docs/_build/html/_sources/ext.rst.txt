@@ -1,0 +1,7 @@
+.. currentmodule:: CommandLine
+
+CommandLine.ext
+=======================================
+
+.. autoclass:: Syntax
+    :members: Syntax, getpass

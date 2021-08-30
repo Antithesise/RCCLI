@@ -1,0 +1,4 @@
+.. currentmodule:: CommandLine.ext
+
+.. automodule:: ext
+    :members: Syntax, getpass
